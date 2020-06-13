@@ -37,7 +37,8 @@
       done
    }
 
-	function assignSymbol(){
+	function assignSymbol()
+	{
 	randomGenerator
 	if [ $generator -eq $userSymbol ]
 	then
@@ -50,7 +51,6 @@
 	echo "Player Symbol is $userSymbol and Computer Symbol is $compSymbol "
 
 	}
-	assignSymbol
 
 	function tossFirstPlayer()
 	{
@@ -69,6 +69,7 @@
 	{
 		checker=false
 		displayBoard
+		assignSymbol
 		echo "Choose a cell for your $userSymbol "
 		read -p "Enter the choice in range 1 - $BOARD_SIZE : " inputPosition
 
