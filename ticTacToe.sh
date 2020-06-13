@@ -1,18 +1,25 @@
-   echo "Welcome to TIC TAC TOE "
+ echo "Welcome to TIC TAC TOE "
 
    ROW_SIZE=3
    BOARD_SIZE=$((ROW_SIZE*ROW_SIZE))
-	user_symbol=1
-	comp_symbol=0
-	first_player=0
+	userSymbol=1
+	compSymbol=0
+	firstPlayer=0
 
    declare -a board
 
 	function randomGenerator(){
 		generator=$((RANDOM%2))
 	}
+	function boardinitializer()
+	{
+		for (( index =1; index<=$BOARD_SIZE; index++ ))
+		do
+			board[$index]=0
+		done
+	}
 
-   function showBoard()
+   function displayBoard()
    {
       local count=0
       for (( count=1; count<=$BOARD_SIZE; count++ ))
@@ -32,22 +39,23 @@
 
 	function assignSymbol(){
 	randomGenerator
-	if [ $generator -eq $user_symbol ]
+	if [ $generator -eq $userSymbol ]
 	then
-		user_symbol="X"
-		comp_symbol="O"
+		userSymbol="X"
+		compSymbol="O"
 	else
-		user_symbol="O"
-		comp_symbol="X"
+		userSymbol="O"
+		compSymbol="X"
 	fi
-	echo "Player Symbol is $user_symbol and Computer_Symbol is $comp_symbol "
+	echo "Player Symbol is $userSymbol and Computer Symbol is $compSymbol "
 
 	}
+	assignSymbol
 
 	function tossFirstPlayer()
 	{
 	randomGenerator
-	if [ $generator -eq $user_symbol ]
+	if [ $generator -eq $userSymbol ]
 	then
 		firstPlayer=human
 		echo "HUMAN won toss"
@@ -57,8 +65,20 @@
 	fi
 	}
 
-	tossFirstPlayer
+	function playerInputChecker()
+	{
+		checker=false
+		displayBoard
+		echo "Choose a cell for your $userSymbol "
+		read -p "Enter the choice in range 1 - $BOARD_SIZE : " inputPosition
 
+		if [ $inputPosition -gt 0 -a $inputPosition -le $BOARD_SIZE ]
+		then
+			echo "Valid choice  $inputPosition in range"
+		else
+			echo "Invalid position out of range"
+		fi
 
-
+	}
+	playerInputChecker
 
