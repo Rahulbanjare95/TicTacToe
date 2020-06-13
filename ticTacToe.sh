@@ -2,7 +2,8 @@
 
    ROW_SIZE=3
    BOARD_SIZE=$((ROW_SIZE*ROW_SIZE))
-
+	user_symbol=1
+	comp_symbol=0
    declare -a board
 
    function showBoard()
@@ -23,9 +24,22 @@
       done
    }
 
-   showBoard
+	function assignSymbol(){
 
+	generator=$((RANDOM%2))
+	if [ $generator -eq $user_symbol ]
+	then
+		user_symbol="X"
+		comp_symbol="O"
+	else
+		user_symbol="O"
+		comp_symbol="X"
+	fi
+	echo "Player Symbol is $user_symbol and Computer_Symbol is $comp_symbol "
 
+	}
+
+	assignSymbol
 
 
 
