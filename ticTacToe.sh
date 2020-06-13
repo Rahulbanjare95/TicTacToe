@@ -38,7 +38,6 @@
 	echo "Player Symbol is $user_symbol and Computer_Symbol is $comp_symbol "
 
 	}
-
 	assignSymbol
 
 
