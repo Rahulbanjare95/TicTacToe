@@ -4,7 +4,13 @@
    BOARD_SIZE=$((ROW_SIZE*ROW_SIZE))
 	user_symbol=1
 	comp_symbol=0
+	first_player=0
+
    declare -a board
+
+	function randomGenerator(){
+		generator=$((RANDOM%2))
+	}
 
    function showBoard()
    {
@@ -25,8 +31,7 @@
    }
 
 	function assignSymbol(){
-
-	generator=$((RANDOM%2))
+	randomGenerator
 	if [ $generator -eq $user_symbol ]
 	then
 		user_symbol="X"
@@ -38,7 +43,21 @@
 	echo "Player Symbol is $user_symbol and Computer_Symbol is $comp_symbol "
 
 	}
-	assignSymbol
+
+	function tossFirstPlayer()
+	{
+	randomGenerator
+	if [ $generator -eq $user_symbol ]
+	then
+		firstPlayer=human
+		echo "HUMAN won toss"
+	else
+		firstPlayer=computer
+		echo "Computer won toss"
+	fi
+	}
+
+	tossFirstPlayer
 
 
 
