@@ -285,7 +285,6 @@ function block(){
 }
 
 
-	function sides()
 	{
 	if [ $visited == "false" ]
 	then
@@ -344,8 +343,8 @@ function winnerChecker(){
 	 if [ "$visited" == "false" ]
 		then
 			mid=$((ROW_SIZE/2))
-			key=$(( $(( ROW_SIZE*mid)) + $((ROW_SIZE-mid)) ))
-			validPositionChecker $key $compSymbol
+			position=$(( $(( ROW_SIZE*mid)) + $((ROW_SIZE-mid)) ))
+			validPositionChecker $position $compSymbol
 		fi
 	}
 	function check_Win(){
@@ -362,7 +361,7 @@ function Plays(){
 	block
 	corners
 	centre
-	sides
+
 	computerPlay
 }
 
