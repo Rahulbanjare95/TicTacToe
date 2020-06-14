@@ -1,4 +1,4 @@
-
+#!/bin/bash -x
 	ROW_SIZE=3
 	BOARD_SIZE=$(($ROW_SIZE*$ROW_SIZE))
 	userSymbol="O"
@@ -95,14 +95,12 @@
         do
                 read -p "Please enter the number between 1-9 where insert your $userSymbol in board " input
                 validPositionChecker $input $userSymbol
-					
                 if [ "$validator" == "false" ]
                 then
-                        echo Input not accepted please try again
+                    echo Input not accepted please try again
                 fi
         done
         validator=false
-
 		}
 
 	function diagonalEndingTopLeft(){
@@ -241,15 +239,25 @@
 	 rowChecker $compSymbol
 	validPositionChecker $cell $compSymbol
 	 columnChecker $compSymbol
+	validPositionChecker $cell $compSymbol
 
-
+	}
+	function Block(){
+	 	diagonalEndingTopLeft $userSymbol
+   	validPositionChecker $cell $compSymbol
+    	diagonalEndingTopRight $userSymbol
+   	validPositionChecker $cell $compSymbol
+    	rowChecker $userSymbol
+   	validPositionChecker $cell $compSymbol
+    	columnChecker $userSymbol
+	 	validPositionChecker $cell $compSymbol
 	}
 
 	function checkForComp(){
 		validPositionChecker
+		Block
 		computerPlays
 	}
-
 
 	function winnerCheck(){
         diagonalEndingTopLeft $1
@@ -267,15 +275,12 @@
         fi
 	}
 
-
 	function simulateTicTacToe(){
         boardInitializer
         assignSymbol
         toss
         while [ $quit == false ]
         do
-                validator=false
-					valid=false
                 displayBoard
                 userPlays
                 validator=false
@@ -287,6 +292,5 @@
         done
         displayBoard
 	}
-
 	simulateTicTacToe
 
