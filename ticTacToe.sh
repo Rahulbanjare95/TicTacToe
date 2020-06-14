@@ -59,98 +59,148 @@
 		}
 
 	function validPositionChecker(){
+		if [ "$visited" == "false" ]
+		then
+
         if [ $1 -gt 0  -a $1 -le $BOARD_SIZE ]
         then
-                validator=true
+               validator=true
         fi
         if [ "$validator" == "true" -a "${board[$1]}" == "0" ]
         then
-                board[$1]=$2
+               board[$1]=$2
+					visited=true
         else
                 validator=false
         fi
+		fi
 
 		}
 
 	function computerPlays(){
-        while [ "$validator" == "false" ]
+      if [ "$visited" == "false" ]
+		then
+		  while [ "$validator" == "false" ]
         do
                 number=$((RANDOM%9+1))
                 validPositionChecker $number $compSymbol
         done
         validator=false
+		fi
 		}
 
 	function userPlays(){
+
         while [ "$validator" == "false" ]
         do
-                read -p "Please enter the number between 1-9 where insert your $userSymbol in board " input;
+                read -p "Please enter the number between 1-9 where insert your $userSymbol in board " input
                 validPositionChecker $input $userSymbol
+					
                 if [ "$validator" == "false" ]
                 then
                         echo Input not accepted please try again
                 fi
         done
         validator=false
+
 		}
 
 	function diagonalEndingTopLeft(){
-        local count=0
-        local increase_by=$((ROW_SIZE+1))
+		if [ "$visited" == "false" ]
+		then
+			cell=0
+		  local count=0
+		  local increase_by=$((ROW_SIZE+1))
         for (( position=1; position <= $BOARD_SIZE; position+=$((ROW_SIZE+1)) ))
         do
                 if [ ${board[$position]} == $1 ]
                 then
                         ((count++))
-                fi
+                elif [ "$cell" == "0" -a "${board[$position]}" == "0" ]
+					 then
+							cell=$position
+					 fi
         done
         if [ $count -eq $ROW_SIZE ]
         then
                 winnerDisplay $1
                 quit=true
-        fi
+        elif [ $count -ne $(($ROW_SIZE-1)) ]
+			then
+				cell=0
+			fi
+		fi
+
 		}
 
 	function diagonalEndingTopRight(){
+		if [ "$visited" == "false" ]
+		then
+
         local count=0
+			cell=0
         for (( position=$ROW_SIZE; position <= $((BOARD_SIZE+1-ROW_SIZE)); position+=$((ROW_SIZE-1)) )) do
                 if [ ${board[$position]} == $1 ]
                 then
                         ((count++))
-                fi
+                elif [ "$cell" == "0" -a "${board[$position]}" == 0 ]
+						then
+							cell=$position
+						fi
+
         done
         if [ $count == $ROW_SIZE ]
         then
                 winnerDisplay $1
                 quit=true
-        fi
+   		elif [ $count -ne $(($ROW_SIZE-1)) ]
+			then
+					cell=0
+	     	fi
+		fi
 		}
 
 	function rowChecker(){
+		if [ "$visited" == "false" ]
+		then
+
         local count=0
         position=0
-        for (( row=0;row<$ROW_SIZE;row++ )) do
+        for (( row=0;row<$ROW_SIZE;row++ )) 
+			do
                 count=0
-                for (( col=1; col<=$ROW_SIZE; col++ )) do
-                        position=$(($ROW_SIZE*row+col ))
-                        if [ ${board[$position]} == $1 ]
-                        then
-                                (( count++ ))
-                        fi
-                done
+					cell=0
+           for (( col=1; col<=$ROW_SIZE; col++ )) 
+				do
+               position=$(($ROW_SIZE*row+col ))
+               if [ ${board[$position]} == $1 ]
+               then
+                    (( count++ ))
+                elif [ "$cell" == "0" -a "${board[$position]}" == 0 ]
+                  then
+                     cell=$position
+                  fi
+
+              done
                 if [ $count -eq $ROW_SIZE ]
                 then
                         winnerDisplay $1
-                        break
+                        quit=true
+								break
+					elif [ $count -ne $(($ROW_SIZE-1)) ]
+					then
+						cell=0
+					else
+						break
+
                 fi
         done
-        if [ $count -eq $ROW_SIZE ]
-        then
-                quit=true
         fi
 		}
 
 	function columnChecker(){
+		 if [ "$visited" == "false" ]
+		then
        local count=0
         position=0
         for (( col=1;col<=$ROW_SIZE;col++ )) do
@@ -160,20 +210,46 @@
                         if [ "${board[$position]}" == "$1" ]
                         then
                                 (( count++ ))
-                        fi
-                done
+								 elif [ "$cell" == "0" -a "${board[$position]}" == 0 ]
+                  then
+                     cell=$position
+                  fi
+
+              done
                 if [ $count -eq $ROW_SIZE ]
                 then
                         winnerDisplay $1
-                        break
+                        quit=true
+								break
+               elif [ $count -ne $(($ROW_SIZE-1)) ]
+               then
+                  cell=0
+               else
+                  break
 
                 fi
         done
-        if [ $count -eq $ROW_SIZE ]
-        then
-                quit=true
         fi
+
 		}
+
+	function checkMoveToWin(){
+	 diagonalEndingTopLeft $compSymbol
+	validPositionChecker $cell $compSymbol
+	 diagonalEndingTopRight $compSymbol
+	validPositionChecker	$cell $compSymbol
+	 rowChecker $compSymbol
+	validPositionChecker $cell $compSymbol
+	 columnChecker $compSymbol
+
+
+	}
+
+	function checkForComp(){
+		validPositionChecker
+		computerPlays
+	}
+
 
 	function winnerCheck(){
         diagonalEndingTopLeft $1
@@ -181,6 +257,7 @@
         rowChecker $1
         columnChecker $1
 	}
+
 	function winnerDisplay(){
         if [ $1 == $userSymbol ]
         then
@@ -198,19 +275,18 @@
         while [ $quit == false ]
         do
                 validator=false
+					valid=false
                 displayBoard
-                userPlays $firstPlay
+                userPlays
                 validator=false
+						valid=false
                 winnerCheck $userSymbol
-                computerPlays $firstPlay
+                computerPlays
+						valid=false
                 winnerCheck $compSymbol
         done
         displayBoard
 	}
 
 	simulateTicTacToe
-
-
-
-
 
