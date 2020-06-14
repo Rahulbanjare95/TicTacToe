@@ -284,34 +284,6 @@ function block(){
 
 }
 
-
-	{
-	if [ $visited == "false" ]
-	then
-	for (( side=1; side<=$ROW_SIZE; side++ ))
-	do
-		position=side
-		validPositionChecker $position $compSymbol
-	done
-
-	for (( side=1; side<=$BOARD_SIZE; side+=$ROW_SIZE ))
-	do
-		position=side
-		validPositionChecker $position $compSymbol
-	done
-
-	for (( side=$((BOARD_SIZE-ROW_SIZE+1)); side<=$BOARD_SIZE; side++ ))
-	do
-      position=side
-      validPositionChecker $position $compSymbol
-   done
-	for (( side=$ROW_SIZE; side<=$BOARD_SIZE; side++ ))
-	do
-      position=side
-      validPositionChecker $position $compSymbol
-   done
-	fi
-	}
 	function corners(){
 	if [ $visited == "false" ]
 	then
@@ -355,13 +327,42 @@ function winnerChecker(){
 	}
 
 
+  function sides()
+   {
+   if [ $visited == "false" ]
+   then
+   for (( side=1; side<=$ROW_SIZE; side++ ))
+   do
+      position=side
+      validPositionChecker $position $compSymbol
+   done
+
+   for (( side=1; side<=$BOARD_SIZE; side+=$ROW_SIZE ))
+   do
+      position=side
+      validPositionChecker $position $compSymbol
+   done
+
+   for (( side=$((BOARD_SIZE-ROW_SIZE+1)); side<=$BOARD_SIZE; side++ ))
+   do
+      position=side
+      validPositionChecker $position $compSymbol
+   done
+   for (( side=$ROW_SIZE; side<=$BOARD_SIZE; side++ ))
+   do
+      position=side
+      validPositionChecker $position $compSymbol
+   done
+   fi
+   }
+
 
 function Plays(){
 	winnerChecker
 	block
 	corners
 	centre
-
+	sides
 	computerPlay
 }
 
