@@ -285,26 +285,50 @@ function block(){
 }
 
 
-
-function corners(){
+	function sides()
+	{
 	if [ $visited == "false" ]
-	then 
-		local key=1
-		validPositionChecker 1 $compSymbol
-		
-		position=$((ROW_SIZE*0+ROW_SIZE))
-		validPositionChecker $key $compSymbol
-		
-		position=$(( ROW_SIZE*$((ROW_SIZE-1)) + 1))	
-		validPositionChecker $key $compSymbol
-		
-		position=$(( ROW_SIZE*$((ROW_SIZE-1)) + ROW_SIZE))
-		validPositionChecker $key $compSymbol
+	then
+	for (( side=1; side<=$ROW_SIZE; side++ ))
+	do
+		position=side
+		validPositionChecker $position $compSymbol
+	done
+
+	for (( side=1; side<=$BOARD_SIZE; side+=$ROW_SIZE ))
+	do
+		position=side
+		validPositionChecker $position $compSymbol
+	done
+
+	for (( side=$((BOARD_SIZE-ROW_SIZE+1)); side<=$BOARD_SIZE; side++ ))
+	do
+      position=side
+      validPositionChecker $position $compSymbol
+   done
+	for (( side=$ROW_SIZE; side<=$BOARD_SIZE; side++ ))
+	do
+      position=side
+      validPositionChecker $position $compSymbol
+   done
 	fi
-	
+	}
+	function corners(){
+	if [ $visited == "false" ]
+	then
+		local position=1
+		validPositionChecker 1 $compSymbol
+		position=$((ROW_SIZE*0+ROW_SIZE))
+		validPositionChecker $position $compSymbol
+		position=$(( ROW_SIZE*$((ROW_SIZE-1)) + 1))
+
+		validPositionChecker $position $compSymbol
+		position=$(( ROW_SIZE*$((ROW_SIZE-1)) + ROW_SIZE))
+		validPositionChecker $position $compSymbol
+	fi
 }
 
-function check_If_Can_Win(){
+function winnerChecker(){
 	rowChecker $compSymbol
 	validPositionChecker $cell $compSymbol
 	columnChecker $compSymbol
@@ -315,21 +339,34 @@ function check_If_Can_Win(){
 	validPositionChecker $cell $compSymbol
 }
 
-function check_Win(){
-	diagonalEndingTopRight $1
-	diagonalEndingTopLeft $1
-	rowWin $1
-	columnWin $1
-}
+	function centre()
+	{
+	 if [ "$visited" == "false" ]
+		then
+			mid=$((ROW_SIZE/2))
+			key=$(( $(( ROW_SIZE*mid)) + $((ROW_SIZE-mid)) ))
+			validPositionChecker $key $compSymbol
+		fi
+	}
+	function check_Win(){
+		diagonalEndingTopRight $1
+		diagonalEndingTopLeft $1
+		rowWin $1
+		columnWin $1
+	}
 
-function comp_Plays(){
-	check_If_Can_Win
+
+
+function Plays(){
+	winnerChecker
 	block
 	corners
+	centre
+	sides
 	computerPlay
 }
 
-function play(){
+function simulateTicTacToe(){
 	boardInitializer
 	assignSymbol
 	toss
@@ -341,15 +378,14 @@ function play(){
 		userPlays
 		validator=false
 		visited=false
-#		echo ${board[@]}
 		check_Win $userSymbol
-		comp_Plays
-		visited=false		
+		Plays
+		visited=false
 		check_Win $compSymbol
 	done
 	displayBoard
 }
 
-play
+simulateTicTacToe
 
 
