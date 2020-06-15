@@ -60,7 +60,7 @@
 		if [ "$visited" == "false" ]
         then
 
-			if [ $1 -gt 0  -a $1 -le $BOARD_SIZE ]
+			if [ "$1" -gt "0"  -a "$1" -le "$BOARD_SIZE" ]
 			then
 				validator=true
 			fi
@@ -96,9 +96,7 @@
 			echo "Invalid User Input"
 		fi
 		done
-
 	}
-
 
 	function winnerDisplay(){
 		if [ "$1" == "$userSymbol" ]
@@ -108,6 +106,7 @@
 		echo "Computer won"
 		fi
 	}
+
 	function countRowSize(){
 			count==$ROW_SIZE
          winnerDisplay $1
@@ -161,7 +160,6 @@
 	        cell=0
      	fi
 	fi
-	
 	}
 
 	function rowChecker(){
@@ -195,6 +193,7 @@
         done
 	fi
 	}
+
 	function columnChecker(){
 		if [ "$visited" == "false" ]
         then
@@ -228,7 +227,6 @@
 		}
 
 	function block(){
-
 	rowChecker $userSymbol
 	validPositionChecker $cell $compSymbol
 	columnChecker $userSymbol
@@ -237,7 +235,6 @@
 	validPositionChecker $cell $compSymbol
 	diagonalEndingTopLeft $userSymbol
 	validPositionChecker $cell $compSymbol
-
 	}
 
 	function corners(){
@@ -285,7 +282,6 @@
 		columnChecker $1
 	}
 
-
   function sides()
    {
    if [ $visited == "false" ]
@@ -315,12 +311,12 @@
    fi
    }
 
-
 	function Plays(){
 		winnerChecker
 		block
 		corners
 		centre
+		sides
 		computerPlay
 	}
 
@@ -348,16 +344,14 @@
 	function resetter(){
 		 validator=false
          visited=false
-
 	}
-
 
 	function simulateTicTacToe()
 	{
 		resetBoard
 		assignSymbol
 		toss
-	while [ $quit == false ]
+		while [ $quit == false ]
 		do
 			resetter
 			if [ $first == user ]
@@ -369,17 +363,18 @@
 				GameEnd
 				first=comp
 			fi
-		if [ $first == comp -a $quit == false ]
-		then
-			Plays
-			resetter
-			checkPossibleWins $compSymbol
-			GameEnd
-			first=user
-		fi
-	done
+
+			if [ $first == comp -a $quit == false ]
+			then
+				Plays
+				resetter
+				checkPossibleWins $compSymbol
+				GameEnd
+				first=user
+			fi
+		
+		done
 	displayBoard
 	}
-
 	simulateTicTacToe
 
