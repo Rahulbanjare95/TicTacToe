@@ -1,9 +1,7 @@
 	#!/bin/bash -x
-	declare -A board
+
 	read -p "Enter the  Row size " ROW_SIZE
-
 	echo "Your Board is $ROW_SIZE X $ROW_SIZE "
-
 	BOARD_SIZE=$(($ROW_SIZE*$ROW_SIZE))
 	echo "Board has $BOARD_SIZE cells"
 	userSymbol="o"
@@ -12,6 +10,7 @@
 	validator=false
 	position=0
 	count=0
+	declare -a board
 	function resetBoard(){
 		for (( position=1; position<=$BOARD_SIZE ; position++ )) do
       		board[$position]=0
@@ -19,7 +18,7 @@
 	}
 
 	function displayBoard(){
-		for (( count=1; count<=$BOARD_SIZE ; count++ )) 
+		for (( count=1; count<=$BOARD_SIZE ; count++ ))
 		do
 			if [ "${board[$count]}" == "0" ]
          	then
@@ -102,13 +101,19 @@
 
 
 	function winnerDisplay(){
-		if [ $1 == $userSymbol ]
+		if [ "$1" == "$userSymbol" ]
 		then
 		echo "You won"
 		else
 		echo "Computer won"
 		fi
 	}
+	function countRowSize(){
+			count==$ROW_SIZE
+         winnerDisplay $1
+         quit=true
+	}
+
 	function diagonalEndingTopLeft(){
 		if [ "$visited" == "false" ]
         then
@@ -125,8 +130,7 @@
 			done
 		if [ $count -eq $ROW_SIZE ]
 		then
-			winnerDisplay $1
-			quit=true
+			countRowSize
 		elif [ $count -ne $(($ROW_SIZE-1)) ]
 	        then
 	                cell=0
@@ -134,129 +138,94 @@
 	fi
 	}
 
-function diagonalEndingTopRight(){
+	function diagonalEndingTopRight(){
 	if [ "$visited" == "false" ]
-        then
-				cell=0
-	        local count=0
-		for (( position=$ROW_SIZE; position <= $((BOARD_SIZE-ROW_SIZE+1)); position+=$((ROW_SIZE-1)) )) 
+      then
+		cell=0
+     	local count=0
+		for (( position=$ROW_SIZE; position <= $((BOARD_SIZE-ROW_SIZE+1)); position+=$((ROW_SIZE-1)) ))
 			do
-	                if [ ${board[$position]} == $1 ]
-	                then
-	                	(( count++ ))
-			elif [ "$cell" == "0" -a "${board[$position]}" == "0" ]
-	                then
-	        			cell=$position
-	                fi
-	        done
-	        if [ $count == $ROW_SIZE ]
-	        then
-	                winnerDisplay $1
-						quit=true
-	        elif [ $count -ne $(($ROW_SIZE-1)) ]
-	        then
-		        cell=0
-	        fi
-		fi
+       	if [ ${board[$position]} == $1 ]
+      		then
+       		(( count++ ))
+		 	elif [ "$cell" == "0" -a "${board[$position]}" == "0" ]
+ 				then
+				cell=$position
+ 		 	fi
+      	done
+     if [ $count == $ROW_SIZE ]
+  		  then
+				countRowSize
+     elif [ $count -ne $(($ROW_SIZE-1)) ]
+        then
+	        cell=0
+     	fi
+	fi
+	
 	}
 
 	function rowChecker(){
 	if [ "$visited" == "false" ]
-	then
+		then
 		local count=0
-	        for (( row=0;row<$ROW_SIZE;row++ )) do
-	                count=0
-	                cell=0
-	                for (( col=1; col<=$ROW_SIZE; col++ )) do
-	                        position=$((ROW_SIZE*row+col ))
-	                        if [ ${board[$position]} == $1 ]
-	                        then
-	                                (( count++ ))
-	                        elif [ "$cell" == "0" -a "${board[$position]}" == "0" ]
-	                        then
-        		                cell=$position
-        	                fi
-        	        done
-        	        if [ $count -ne $(( ROW_SIZE-1 )) ]
-        	        then
-        	                cell=0
-			else
-				break
-	                fi
-	        done
+        for (( row=0;row<$ROW_SIZE;row++ ))
+			do
+          count=0
+          cell=0
+          for (( col=1; col<=$ROW_SIZE; col++ )) 
+			 do
+            position=$((ROW_SIZE*row+col ))
+         	if [ ${board[$position]} == $1 ]
+      		then
+               (( count++ ))
+            elif [ "$cell" == "0" -a "${board[$position]}" == "0" ]
+            then
+               cell=$position
+            fi
+  	         done
+				if [ $count == $ROW_SIZE ]
+				then
+					countRowSize
+  	        	elif [ $count -ne $(( ROW_SIZE-1 )) ]
+  	        	then
+                cell=0
+				else
+					break
+            fi
+        done
 	fi
 	}
-
-
-	function rowWin(){
-	local count=0
-	for (( row=0; row<$ROW_SIZE; row++ )) do
-		count=0
-		for (( col=1; col<=$ROW_SIZE; col++ )) do
-			position=$(( ROW_SIZE*row+col ))
-			if [ ${board[$position]} == $1 ]
-			then
-				(( count++ ))
-			fi
-		done
-		if [ $count -eq $ROW_SIZE ]
-		then
-			winnerDisplay $1
-			quit=true
-			break
-		fi
-	done
-	}
-
 	function columnChecker(){
 		if [ "$visited" == "false" ]
         then
 		local count=0
-		for (( col=1;col<=$ROW_SIZE;col++ )) do
-		        count=0
-		        cell=0
-		        for (( row=0; row<=$ROW_SIZE; row++ )) do
-		                position=$((ROW_SIZE*row+col ))
-		                if [ "${board[$position]}" == "$1" ]
+		for (( col=1;col<=$ROW_SIZE;col++ )) 
+			do
+        	count=0
+         cell=0
+         for (( row=0; row<=$ROW_SIZE; row++ )) 
+			do
+          	position=$((ROW_SIZE*row+col ))
+         	if [ "${board[$position]}" == "$1" ]
 				then
-		                        (( count++ ))
-		                elif [ "$cell" == "0" -a "${board[$position]}" == "0" ]
-				then
+               (( count++ ))
+             elif [ "$cell" == "0" -a "${board[$position]}" == "0" ]
+				 then
 					cell=$position
-		                fi
-		        done
-		        if [ $count -ne $(( ROW_SIZE-1 )) ]
-		        then
-		               cell=0
-					else
-						break
-		        fi
-			done
+             fi
+        	done
+			if [ $count == $ROW_SIZE ]
+         then
+            countRowSize
+         elif [ $count -ne $(( ROW_SIZE-1 )) ]
+         then
+             cell=0
+			 else
+            	break
+       	 fi
+     		done
 		fi
 		}
-
-	function columnWin(){
-		if [ "$visited" == "false" ]
-        then
-		local count=0
-		for (( col=1;col<=$ROW_SIZE;col++ )) do
-		        count=0
-		        for (( row=0; row<=$ROW_SIZE; row++ )) do
-		                position=$(($ROW_SIZE*row+col ))
-		                if [ "${board[$position]}" == "$1" ]
-		                then
-		                        (( count++ ))
-		                fi
-		        done
-		        if [ $count -eq $ROW_SIZE ]
-		        then
-		            winnerDisplay $1
-						quit=true
-						break
-					fi
-			done
-		fi
-	}
 
 	function block(){
 
@@ -312,8 +281,8 @@ function diagonalEndingTopRight(){
 	function checkPossibleWins(){
 		diagonalEndingTopRight $1
 		diagonalEndingTopLeft $1
-		rowWin $1
-		columnWin $1
+		rowChecker $1
+		columnChecker $1
 	}
 
 
@@ -375,7 +344,12 @@ function diagonalEndingTopRight(){
 		quit=true
 	fi
 
-}
+	}
+	function resetter(){
+		 validator=false
+         visited=false
+
+	}
 
 
 	function simulateTicTacToe()
@@ -385,14 +359,12 @@ function diagonalEndingTopRight(){
 		toss
 	while [ $quit == false ]
 		do
-			validator=false
-			visited=false
+			resetter
 			if [ $first == user ]
 			then
 				displayBoard
 				userPlays
-				validator=false
-				visited=false
+				resetter
 				checkPossibleWins $userSymbol
 				GameEnd
 				first=comp
@@ -400,9 +372,7 @@ function diagonalEndingTopRight(){
 		if [ $first == comp -a $quit == false ]
 		then
 			Plays
-			validator=false
-			visited=false
-
+			resetter
 			checkPossibleWins $compSymbol
 			GameEnd
 			first=user
