@@ -1,4 +1,4 @@
-	#!/bin/bash -x
+#!/bin/bash
 
 	read -p "Enter the  Row size " ROW_SIZE
 	echo "Your Board is $ROW_SIZE X $ROW_SIZE "
@@ -170,7 +170,7 @@
 			do
           count=0
           cell=0
-          for (( col=1; col<=$ROW_SIZE; col++ )) 
+          for (( col=1; col<=$ROW_SIZE; col++ ))
 			 do
             position=$((ROW_SIZE*row+col ))
          	if [ ${board[$position]} == $1 ]
@@ -198,11 +198,11 @@
 		if [ "$visited" == "false" ]
         then
 		local count=0
-		for (( col=1;col<=$ROW_SIZE;col++ )) 
+		for (( col=1;col<=$ROW_SIZE;col++ ))
 			do
         	count=0
          cell=0
-         for (( row=0; row<=$ROW_SIZE; row++ )) 
+         for (( row=0; row<=$ROW_SIZE; row++ ))
 			do
           	position=$((ROW_SIZE*row+col ))
          	if [ "${board[$position]}" == "$1" ]
@@ -241,6 +241,7 @@
 	if [ $visited == "false" ]
 	then
 		local position=1
+
 		validPositionChecker 1 $compSymbol
 		position=$((ROW_SIZE*0+ROW_SIZE))
 		validPositionChecker $position $compSymbol
@@ -284,26 +285,27 @@
 
   function sides()
    {
+		local side=0
    if [ $visited == "false" ]
    then
-   for (( side=1; side<=$ROW_SIZE; side++ ))
+   for (( "side"="1"; "side"<="$ROW_SIZE"; side++ ))
    do
       position=side
       validPositionChecker $position $compSymbol
    done
 
-   for (( side=1; side<=$BOARD_SIZE; side+=$ROW_SIZE ))
+   for (( "side=1"; "side"<="$BOARD_SIZE"; side+=$ROW_SIZE ))
    do
       position=side
       validPositionChecker $position $compSymbol
    done
 
-   for (( side=$((BOARD_SIZE-ROW_SIZE+1)); side<=$BOARD_SIZE; side++ ))
+   for (( "side"="$((BOARD_SIZE-ROW_SIZE+1))"; "side"<="$BOARD_SIZE"; side++ ))
    do
       position=side
       validPositionChecker $position $compSymbol
    done
-   for (( side=$ROW_SIZE; side<=$BOARD_SIZE; side++ ))
+   for (( "side"="$ROW_SIZE"; "side"<="$BOARD_SIZE"; side++ ))
    do
       position=side
       validPositionChecker $position $compSymbol
@@ -376,4 +378,5 @@
 	displayBoard
 	}
 	simulateTicTacToe
+
 
