@@ -1,10 +1,14 @@
 #!/bin/bash
 
 	declare -A board
-	ROW_SIZE=3
+	read -p "Enter the  Row size " ROW_SIZE
+	
+	echo "Your Board is $ROW_SIZE X $ROW_SIZE "
+
 	BOARD_SIZE=$(($ROW_SIZE*$ROW_SIZE))
-	userSymbol="O"
-	compSymbol="O"
+	echo "Board has $BOARD_SIZE cells"
+	userSymbol="X"
+	compSymbol="X"
 	quit=false
 	validator=false
 	position=0
@@ -23,9 +27,9 @@
 		do
 			if [ "${board[$count]}" == "0" ]
          	then
-			printf  _" "
+			printf  _"|"
         	else
-			printf ${board[$count]}" "
+			printf ${board[$count]}"|"
          fi
 			if [ $(( $count % $ROW_SIZE )) -eq 0 ]
 			then
@@ -38,9 +42,9 @@
 		randomVariable=$((RANDOM%2))
 		if [ $randomVariable -eq 0 ]
 		then
-			userSymbol="X"
+			userSymbol="0"
 		else
-			compSymbol="X"
+			compSymbol="O"
 		fi
 		echo "Your sign is "$userSymbol" and computer sign is "$compSymbol
 	}
@@ -49,10 +53,10 @@
 		randomVariable=$((RANDOM%2))
 		if [ $randomVariable -eq 0 ]
 		then
-		echo Computer plays first
-		first=user
+		echo Your turn first you won toss
+			first=user
 		else
-		echo You play first
+		echo Computer plays first computer won toss
 		first=comp
    	fi
 	}
@@ -80,7 +84,7 @@
       	then
 				while [ "$validator" == "false" ]
 	        	do
-				number=$((RANDOM%9+1))
+				number=$((RANDOM%BOARD_SIZE+1))
 				validPositionChecker $number $compSymbol
 				done
 			validator=false
@@ -90,7 +94,7 @@
 	function userPlays(){
 		while [ "$validator" == "false" ]
 		do
-		read -p "Please enter the number between 1-9 where insert your $userSymbol in board " input;
+		read -p "Please enter the number between 1-$BOARD_SIZE where insert your $userSymbol in board " input;
 		validPositionChecker $input $userSymbol
 		if [ "$validator" == "false" ]
 		then
@@ -314,7 +318,7 @@ function diagonalEndingTopRight(){
 			validPositionChecker $position $compSymbol
 		fi
 	}
-	function check_Win(){
+	function checkPossibleWins(){
 		diagonalEndingTopRight $1
 		diagonalEndingTopLeft $1
 		rowWin $1
@@ -359,10 +363,11 @@ function diagonalEndingTopRight(){
 		centre
 		computerPlay
 	}
+
 	function GameEnd(){
 		for keys in ${board[@]}
 		do
-			if [ $values==0 ]
+			if [ $keys==0 ]
 			then
 				((count++))
 			fi
@@ -379,13 +384,12 @@ function diagonalEndingTopRight(){
 
 	}
 
-
-	function simulateTicTacToe() 
+	function simulateTicTacToe()
 	{
 		boardInitializer
 		assignSymbol
 		toss
-		while [ $quit == false ]
+	while [ $quit == false ]
 		do
 			validator=false
 			visited=false
@@ -395,15 +399,17 @@ function diagonalEndingTopRight(){
 				userPlays
 				validator=false
 				visited=false
-				check_Win $userSymbol
+				checkPossibleWins $userSymbol
 				GameEnd
 				first=comp
 			fi
 		if [ $first == comp -a $quit == false ]
 		then
 			Plays
+			validator=false
 			visited=false
-			check_Win $compSymbol
+			
+			checkPossibleWins $compSymbol
 			GameEnd
 			first=user
 		fi
