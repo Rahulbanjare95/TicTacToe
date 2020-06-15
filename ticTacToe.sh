@@ -1,28 +1,24 @@
-#!/bin/bash
-
+	#!/bin/bash -x
 	declare -A board
 	read -p "Enter the  Row size " ROW_SIZE
-	
+
 	echo "Your Board is $ROW_SIZE X $ROW_SIZE "
 
 	BOARD_SIZE=$(($ROW_SIZE*$ROW_SIZE))
 	echo "Board has $BOARD_SIZE cells"
-	userSymbol="X"
-	compSymbol="X"
+	userSymbol="o"
+	compSymbol="o"
 	quit=false
 	validator=false
 	position=0
 	count=0
-
-	function boardInitializer(){
-		local position=0
+	function resetBoard(){
 		for (( position=1; position<=$BOARD_SIZE ; position++ )) do
       		board[$position]=0
       	done
 	}
 
 	function displayBoard(){
-		local count=0
 		for (( count=1; count<=$BOARD_SIZE ; count++ )) 
 		do
 			if [ "${board[$count]}" == "0" ]
@@ -42,9 +38,9 @@
 		randomVariable=$((RANDOM%2))
 		if [ $randomVariable -eq 0 ]
 		then
-			userSymbol="0"
+			userSymbol="X"
 		else
-			compSymbol="O"
+			compSymbol="X"
 		fi
 		echo "Your sign is "$userSymbol" and computer sign is "$compSymbol
 	}
@@ -113,13 +109,10 @@
 		echo "Computer won"
 		fi
 	}
-
 	function diagonalEndingTopLeft(){
 		if [ "$visited" == "false" ]
         then
 			local count=0
-			local increase_by=$((ROW_SIZE+1))
-			position=0
 			for (( position=1; position <= $BOARD_SIZE; position+=$((ROW_SIZE+1))  )) 
 			do
 			if [ ${board[$position]} == $1 ]
@@ -139,14 +132,13 @@
 	                cell=0
 		fi
 	fi
-}
+	}
 
 function diagonalEndingTopRight(){
 	if [ "$visited" == "false" ]
         then
 				cell=0
 	        local count=0
-	        position=0
 		for (( position=$ROW_SIZE; position <= $((BOARD_SIZE-ROW_SIZE+1)); position+=$((ROW_SIZE-1)) )) 
 			do
 	                if [ ${board[$position]} == $1 ]
@@ -172,7 +164,6 @@ function diagonalEndingTopRight(){
 	if [ "$visited" == "false" ]
 	then
 		local count=0
-	        position=0
 	        for (( row=0;row<$ROW_SIZE;row++ )) do
 	                count=0
 	                cell=0
@@ -199,7 +190,6 @@ function diagonalEndingTopRight(){
 
 	function rowWin(){
 	local count=0
-	position=0
 	for (( row=0; row<$ROW_SIZE; row++ )) do
 		count=0
 		for (( col=1; col<=$ROW_SIZE; col++ )) do
@@ -222,7 +212,6 @@ function diagonalEndingTopRight(){
 		if [ "$visited" == "false" ]
         then
 		local count=0
-		position=0
 		for (( col=1;col<=$ROW_SIZE;col++ )) do
 		        count=0
 		        cell=0
@@ -250,7 +239,6 @@ function diagonalEndingTopRight(){
 		if [ "$visited" == "false" ]
         then
 		local count=0
-		position=0
 		for (( col=1;col<=$ROW_SIZE;col++ )) do
 		        count=0
 		        for (( row=0; row<=$ROW_SIZE; row++ )) do
@@ -262,11 +250,11 @@ function diagonalEndingTopRight(){
 		        done
 		        if [ $count -eq $ROW_SIZE ]
 		        then
-		                winnerDisplay $1
-				quit=true
-				break
-			fi
-		done
+		            winnerDisplay $1
+						quit=true
+						break
+					fi
+			done
 		fi
 	}
 
@@ -301,10 +289,13 @@ function diagonalEndingTopRight(){
 	function winnerChecker(){
 		rowChecker $compSymbol
 		validPositionChecker $cell $compSymbol
+
 		columnChecker $compSymbol
 		validPositionChecker $cell $compSymbol
+
 		diagonalEndingTopRight $compSymbol
 		validPositionChecker $cell $compSymbol
+
 		diagonalEndingTopLeft $compSymbol
 		validPositionChecker $cell $compSymbol
 	}
@@ -364,29 +355,32 @@ function diagonalEndingTopRight(){
 		computerPlay
 	}
 
-	function GameEnd(){
-		for keys in ${board[@]}
-		do
-			if [ $keys==0 ]
-			then
-				((count++))
-			fi
+	function GameEnd()
+	{
+	local count=0
+	for elements in ${board[@]}
+	do
+		if [ $elements == "0" ]
+		then
+			((count++))
+		fi
 		if [ $count -gt 0 ]
 		then
 			break
 		fi
-		done
-	if [ $count -eq 0 -a $quit == false  ]
+	done
+	if [ $count -eq 0  -a $quit == "false" ]
 	then
-		echo "DRAW"
+		echo "Draw"
 		quit=true
 	fi
 
-	}
+}
+
 
 	function simulateTicTacToe()
 	{
-		boardInitializer
+		resetBoard
 		assignSymbol
 		toss
 	while [ $quit == false ]
@@ -408,7 +402,7 @@ function diagonalEndingTopRight(){
 			Plays
 			validator=false
 			visited=false
-			
+
 			checkPossibleWins $compSymbol
 			GameEnd
 			first=user
@@ -416,6 +410,6 @@ function diagonalEndingTopRight(){
 	done
 	displayBoard
 	}
-simulateTicTacToe
 
+	simulateTicTacToe
 
