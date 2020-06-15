@@ -14,7 +14,7 @@
 	function resetBoard(){
 		for (( position=1; position<=$BOARD_SIZE ; position++ )) do
       		board[$position]=0
-      	done
+      done
 	}
 
 	function displayBoard(){
@@ -22,13 +22,13 @@
 		do
 			if [ "${board[$count]}" == "0" ]
          	then
-			printf  _"|"
+					printf  _"|"
         	else
-			printf ${board[$count]}"|"
+				printf ${board[$count]}"|"
          fi
 			if [ $(( $count % $ROW_SIZE )) -eq 0 ]
-			then
-				echo
+				then
+					echo
 			fi
 		done
 	}
@@ -36,10 +36,10 @@
 	function assignSymbol(){
 		randomVariable=$((RANDOM%2))
 		if [ $randomVariable -eq 0 ]
-		then
-			userSymbol="X"
+			then
+				userSymbol="X"
 		else
-			compSymbol="X"
+				compSymbol="X"
 		fi
 		echo "Your sign is "$userSymbol" and computer sign is "$compSymbol
 	}
@@ -48,11 +48,11 @@
 		randomVariable=$((RANDOM%2))
 		if [ $randomVariable -eq 0 ]
 		then
-		echo Your turn first you won toss
+			echo Your turn first you won toss
 			first=user
 		else
-		echo Computer plays first computer won toss
-		first=comp
+			echo Computer plays first computer won toss
+			first=comp
    	fi
 	}
 
@@ -60,17 +60,17 @@
 		if [ "$visited" == "false" ]
         then
 
-			if [ "$1" -gt "0"  -a "$1" -le "$BOARD_SIZE" ]
-			then
-				validator=true
-			fi
-			if [ "$validator" == "true" -a "${board[$1]}" == "0" ]
-			then
-				board[$1]=$2
-				visited=true
-			else
-				validator=false
-			fi
+				if [ "$1" -gt "0"  -a "$1" -le "$BOARD_SIZE" ]
+				then
+					validator=true
+				fi
+				if [ "$validator" == "true" -a "${board[$1]}" == "0" ]
+				then
+					board[$1]=$2
+					visited=true
+				else
+					validator=false
+				fi
 		fi
 	}
 
@@ -79,10 +79,10 @@
       	then
 				while [ "$validator" == "false" ]
 	        	do
-				number=$((RANDOM%BOARD_SIZE+1))
-				validPositionChecker $number $compSymbol
+					number=$((RANDOM%BOARD_SIZE+1))
+					validPositionChecker $number $compSymbol
 				done
-			validator=false
+				validator=false
 		fi
 	}
 
@@ -120,45 +120,45 @@
 			for (( position=1; position <= $BOARD_SIZE; position+=$((ROW_SIZE+1))  )) 
 			do
 			if [ ${board[$position]} == $1 ]
-			then
-				((count++))
+				then
+					((count++))
 			elif [ "$cell" == "0" -a "${board[$position]}" == "0" ]
-	                then
-	                	cell=$position
+       		then
+          		cell=$position
 			fi
 			done
-		if [ $count -eq $ROW_SIZE ]
-		then
-			countRowSize
-		elif [ $count -ne $(($ROW_SIZE-1)) ]
-	        then
+			if [ $count -eq $ROW_SIZE ]
+				then
+					countRowSize
+			elif [ $count -ne $(($ROW_SIZE-1)) ]
+	      	then
 	                cell=0
+			fi
 		fi
-	fi
 	}
 
 	function diagonalEndingTopRight(){
 	if [ "$visited" == "false" ]
       then
-		cell=0
-     	local count=0
-		for (( position=$ROW_SIZE; position <= $((BOARD_SIZE-ROW_SIZE+1)); position+=$((ROW_SIZE-1)) ))
-			do
-       	if [ ${board[$position]} == $1 ]
-      		then
-       		(( count++ ))
-		 	elif [ "$cell" == "0" -a "${board[$position]}" == "0" ]
- 				then
-				cell=$position
- 		 	fi
-      	done
-     if [ $count == $ROW_SIZE ]
-  		  then
-				countRowSize
-     elif [ $count -ne $(($ROW_SIZE-1)) ]
-        then
-	        cell=0
-     	fi
+			local cell=0
+     		local count=0
+			for (( position=$ROW_SIZE; position <= $((BOARD_SIZE-ROW_SIZE+1)); position+=$((ROW_SIZE-1)) ))
+				do
+       			if [ ${board[$position]} == $1 ]
+      				then
+       					(( count++ ))
+		 			elif [ "$cell" == "0" -a "${board[$position]}" == "0" ]
+ 						then
+							cell=$position
+ 		 			fi
+      		done
+     			if [ $count == $ROW_SIZE ]
+  		  			then
+						countRowSize
+     			elif [ $count -ne $(($ROW_SIZE-1)) ]
+        			then
+	        			cell=0
+     			fi
 	fi
 	}
 
@@ -372,7 +372,6 @@
 				GameEnd
 				first=user
 			fi
-		
 		done
 	displayBoard
 	}
